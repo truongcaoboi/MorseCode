@@ -1,3 +1,9 @@
+/*
+How to build:
+B1. Open termial in folder contain file morse.cpp
+B2. Run command line: gcc morse.cpp -lstdc++ -o morse
+*/
+
 #include <iostream>
 #include <cstdlib> 
 #include <ctime>
@@ -37,8 +43,7 @@ void showHelp(){
 
 void showErrorCode(string mes){
     cout << mes << endl;
-    if(mes.find(arrayError[FileNotFound]) < 0){
-        cout<<"cl";
+    if(mes.find(arrayError[FileNotFound]) == string::npos){
         showHelp();
     }
 }
@@ -98,6 +103,8 @@ struct Config{
 
 typedef struct Config Config;
 
+
+// Check command input and return config
 Config getConfigFromCommandLine(int args, char * argv[]){
     Config config;
     if(args < 2){
@@ -133,7 +140,7 @@ Config getConfigFromCommandLine(int args, char * argv[]){
                         break;
                     }
                     string arg = argv[i];
-                    if(arg.find('c')>=0){
+                    if(arg.find('c') != string::npos){
                         config.isPrintOntoScreen = true;
                     }
                 }else if(arg == "-c"){
@@ -151,6 +158,7 @@ Config getConfigFromCommandLine(int args, char * argv[]){
     return config;
 }
 
+// Check file and return file is file Morse code or file text
 int getTypeFile(string filename){
     fstream file;
     file.open(filename, ios::in);
@@ -170,6 +178,7 @@ int getTypeFile(string filename){
     return typeFile;
 }
 
+// Check file input and file output
 bool checkValidFile(Config *config){
     string inputFile = config->inputFile;
     string outputFile = config->outputFile;
@@ -280,6 +289,7 @@ bool isWord(string word){
     return false;
 }
 
+// get file name without extension
 string getFileName(string fileName){
     int indexStart = fileName.size();
     int indexEnd = fileName.size();
@@ -353,7 +363,7 @@ void convertTextToMorse(Config *config){
                 errorWord = true;
             }
             config->infoTask.totalCharacterNotConvert ++;
-            code == "........ ";
+            code = "........ ";
             string errorConvert = arrayError[ErrorCharacter];
             errorConvert.push_back(charactor);
             errorConvert += " on line " + to_string(line);
@@ -435,7 +445,6 @@ void convertMorseToText(Config *config){
                 }
             }
             if((charactor == '/' || charactor == '\n') && word.size() > 0){
-                cout << word << endl;
                 config->infoTask.numWordInput ++;
                 if(errorWord == true){
                     config->infoTask.numWordError ++;
